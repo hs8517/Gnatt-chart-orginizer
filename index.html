@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ishi Gantt</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="main-header glass-panel">
+            <div class="logo-area">
+                <h1>Ishi <span class="highlight">Gantt</span></h1>
+                <input type="text" id="project-name" class="glass-input project-name-input" placeholder="Project Name"
+                    aria-label="Project Name">
+            </div>
+
+            <div class="controls-area">
+                <div class="scale-selector glass-input">
+                    <button class="scale-btn active" data-scale="day" data-i18n="scale_day">Day</button>
+                    <button class="scale-btn" data-scale="week" data-i18n="scale_week">Week</button>
+                    <button class="scale-btn" data-scale="month" data-i18n="scale_month">Month</button>
+                </div>
+
+                <div class="export-controls">
+                    <button id="btn-export-excel" class="icon-btn" title="Export to Excel">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </button>
+                    <button id="btn-export-pdf" class="icon-btn" title="Export to PDF">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="lang-select-wrapper" style="margin-right: 15px;">
+                    <select id="lang-select" class="glass-input" style="padding: 6px 10px;">
+                        <option value="en">English</option>
+                        <option value="zh">中文</option>
+                        <option value="ja">日本語</option>
+                    </select>
+                </div>
+
+                <button class="icon-btn" id="btn-settings" title="Settings" style="margin-right: 10px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
+                </button>
+
+                <button id="btn-add-task" class="primary-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="icon">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <span data-i18n="btn_new_task">New Task</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="split-view">
+            <!-- Sidebar -->
+            <div class="sidebar glass-panel">
+                <div class="sidebar-header" id="sidebar-header">
+                    <div class="sidebar-col index-col">#</div>
+                    <div class="sidebar-col task-col" data-i18n="col_task_name">Task Name</div>
+                    <div class="sidebar-col owner-col" data-i18n="col_owner">Owner</div>
+                </div>
+                <div class="sidebar-body" id="sidebar-body">
+                    <!-- Sidebar rows injected here -->
+                </div>
+            </div>
+
+            <!-- Main Timeline -->
+            <main class="gantt-wrapper glass-panel">
+                <div class="gantt-header-container" id="gantt-header-container">
+                    <div class="gantt-header-top" id="gantt-header-top"></div>
+                    <div class="gantt-header-middle" id="gantt-header-middle"></div>
+                    <div class="gantt-header-bottom" id="gantt-header-bottom"></div>
+                </div>
+                <div class="gantt-body" id="gantt-body">
+                    <!-- Tasks will be injected here -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2 data-i18n="modal_title">Add New Task</h2>
+                <button id="btn-close-modal" class="close-btn">&times;</button>
+            </div>
+            <form id="add-task-form">
+                <div class="form-group">
+                    <label for="task-name" data-i18n="label_task_name">Task Name</label>
+                    <input type="text" id="task-name" required placeholder="e.g. Project Phase 1" class="glass-input">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-start" data-i18n="label_start_date">Start Date</label>
+                        <input type="date" id="task-start" required class="glass-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-duration" data-i18n="label_duration">Duration (Days)</label>
+                        <input type="number" id="task-duration" class="glass-input" required min="1" value="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-owner" data-i18n="label_owner">Responsible Person</label>
+                    <select id="task-owner" class="glass-input">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="label_color">Color</label>
+                    <div class="color-options">
+                        <label class="color-radio">
+                            <input type="radio" name="task-color" value="#3b82f6" checked>
+                            <span class="swatch" style="background-color: #3b82f6;"></span>
+                        </label>
+                        <label class="color-radio">
+                            <input type="radio" name="task-color" value="#8b5cf6">
+                            <span class="swatch" style="background-color: #8b5cf6;"></span>
+                        </label>
+                        <label class="color-radio">
+                            <input type="radio" name="task-color" value="#10b981">
+                            <span class="swatch" style="background-color: #10b981;"></span>
+                        </label>
+                        <label class="color-radio">
+                            <input type="radio" name="task-color" value="#f59e0b">
+                            <span class="swatch" style="background-color: #f59e0b;"></span>
+                        </label>
+                        <label class="color-radio">
+                            <input type="radio" name="task-color" value="#ef4444">
+                            <span class="swatch" style="background-color: #ef4444;"></span>
+                        </label>
+                        <label class="color-radio">
+                            <input type="radio" name="task-color" value="#ec4899">
+                            <span class="swatch" style="background-color: #ec4899"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="display: flex; gap: 10px;">
+                    <button type="submit" class="primary-btn full-width" id="btn-save-task"
+                        data-i18n="btn_create">Create Task</button>
+                    <button type="button" class="primary-btn" id="btn-delete-task"
+                        style="background: #ef4444; display: none;" data-i18n="btn_delete">Delete</button>
+                    <button type="button" class="primary-btn" id="btn-add-calendar"
+                        style="background: #10b981; display: none;" title="Add to Google Calendar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Theme Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay">
+        <div class="modal glass-panel settings-modal">
+            <div class="modal-header">
+                <h2 data-i18n="modal_title_settings">Settings</h2>
+                <button class="close-btn" id="btn-close-settings">&times;</button>
+            </div>
+
+            <div class="settings-tabs">
+                <button class="tab-btn active" data-tab="appearance" data-i18n="tab_appearance">Appearance</button>
+                <button class="tab-btn" data-tab="team" data-i18n="tab_team">Team</button>
+                <button class="tab-btn" data-tab="data" data-i18n="tab_data">Data</button>
+                <button class="tab-btn" data-tab="summary" data-i18n="tab_summary">Summary</button>
+            </div>
+
+            <div id="tab-data" class="tab-content">
+                <div class="form-group">
+                    <label data-i18n="label_data_source">Data Source</label>
+                    <select id="data-source-select" class="glass-input">
+                        <option value="local">Local Storage</option>
+                        <option value="cloud">Cloud Storage</option>
+                    </select>
+                    <p style="font-size: 0.8em; color: var(--text-secondary); margin-top: 5px;"
+                        data-i18n="desc_data_source">
+                        Switching sources will reload the application with data from the selected source.
+                    </p>
+                </div>
+            </div>
+
+            <div id="tab-summary" class="tab-content">
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <h3 data-i18n="label_total_days">Total Days</h3>
+                        <p id="summary-total-days">-</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 data-i18n="label_total_tasks">Total Tasks</h3>
+                        <p id="summary-total-tasks">-</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 data-i18n="label_team_size">Team Members</h3>
+                        <p id="summary-team-size">-</p>
+                    </div>
+                    <div class="stat-card full-width">
+                        <h3 data-i18n="label_longest_task">Longest Task</h3>
+                        <p id="summary-longest-task">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-appearance" class="tab-content active">
+                <div class="form-group">
+                    <label data-i18n="label_theme">Theme</label>
+                    <div class="theme-options">
+                        <div class="theme-card active" data-theme="black" id="theme-black">
+                            <div class="theme-preview" style="background: #0f172a;"></div>
+                            <span data-i18n="theme_black">Black</span>
+                        </div>
+                        <div class="theme-card" data-theme="white" id="theme-white">
+                            <div class="theme-preview" style="background: #ffffff; border: 1px solid #e2e8f0;"></div>
+                            <span data-i18n="theme_white">White</span>
+                        </div>
+                        <div class="theme-card" data-theme="ivory" id="theme-ivory">
+                            <div class="theme-preview" style="background: #fdfbf7; border: 1px solid #e2e8f0;"></div>
+                            <span data-i18n="theme_ivory">Ivory</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="label_ending_buffer">Ending Buffer (Days)</label>
+                    <input type="number" id="ending-buffer-input" class="glass-input" min="10" value="60">
+                </div>
+            </div>
+
+            <div id="tab-team" class="tab-content">
+                <div class="form-group">
+                    <label data-i18n="label_manage_team">Manage Team Members</label>
+                    <div class="team-input-group">
+                        <input type="text" id="new-member-name" class="glass-input" placeholder="Name">
+                        <input type="email" id="new-member-email" class="glass-input" placeholder="Email (Optional)">
+                        <button id="btn-add-member" class="primary-btn" data-i18n="btn_add">Add</button>
+                    </div>
+                    <ul id="team-list" class="team-list">
+                        <!-- Injected via JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button id="btn-settings-confirm" class="primary-btn full-width"
+                    data-i18n="btn_confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

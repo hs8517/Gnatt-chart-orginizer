@@ -1,0 +1,831 @@
+/* Themes */
+[data-theme="black"] {
+    --bg-color: #0f172a;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    --grid-line-color: rgba(255, 255, 255, 0.05);
+    --input-bg: rgba(15, 23, 42, 0.6);
+    --header-bg: rgba(15, 23, 42, 0.4);
+    --row-hover: rgba(255, 255, 255, 0.05);
+    --sidebar-header-bg: rgba(15, 23, 42, 0.4);
+    --cell-group-bg: rgba(255, 255, 255, 0.02);
+    --modal-bg: #1e293b;
+    --project-input-bg: rgba(255, 255, 255, 0.05);
+    --project-input-focus: rgba(15, 23, 42, 0.8);
+}
+
+[data-theme="white"] {
+    --bg-color: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    --grid-line-color: rgba(0, 0, 0, 0.06);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --header-bg: rgba(255, 255, 255, 0.5);
+    --row-hover: rgba(0, 0, 0, 0.03);
+    --sidebar-header-bg: rgba(241, 245, 249, 0.8);
+    --cell-group-bg: rgba(0, 0, 0, 0.03);
+    --modal-bg: #ffffff;
+    --project-input-bg: rgba(0, 0, 0, 0.04);
+    --project-input-focus: #ffffff;
+}
+
+[data-theme="ivory"] {
+    --bg-color: #fdf6e3;
+    --text-primary: #586e75;
+    --text-secondary: #93a1a1;
+    --glass-bg: rgba(253, 246, 227, 0.85);
+    --glass-border: rgba(147, 161, 161, 0.15);
+    --glass-shadow: 0 4px 30px rgba(88, 110, 117, 0.05);
+    --grid-line-color: rgba(147, 161, 161, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.6);
+    --header-bg: rgba(238, 232, 213, 0.5);
+    --row-hover: rgba(88, 110, 117, 0.05);
+    --sidebar-header-bg: rgba(238, 232, 213, 0.8);
+    --cell-group-bg: rgba(147, 161, 161, 0.05);
+    --modal-bg: #fdf6e3;
+    --project-input-bg: rgba(147, 161, 161, 0.05);
+    --project-input-focus: #ffffff;
+}
+
+/* Base Variable Fallbacks (Default Black if no attrib, but we set it in JS) */
+:root {
+    --accent-color: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.5);
+    --header-height: 80px;
+    --timeline-header-height: 90px;
+    /* 3 rows of 30px */
+
+    /* Defaults to Black theme values to prevent flash */
+    --bg-color: #0f172a;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    --grid-line-color: rgba(255, 255, 255, 0.05);
+    --input-bg: rgba(15, 23, 42, 0.6);
+    --modal-bg: #1e293b;
+    --project-input-bg: rgba(255, 255, 255, 0.05);
+    --project-input-focus: rgba(15, 23, 42, 0.8);
+    --header-bg: rgba(15, 23, 42, 0.4);
+    --row-hover: rgba(255, 255, 255, 0.05);
+    --sidebar-header-bg: rgba(15, 23, 42, 0.4);
+    --cell-group-bg: rgba(255, 255, 255, 0.02);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* BG gradients might need theme specific overrides, or simpler approach */
+    background-image:
+        radial-gradient(circle at 10% 20%, var(--accent-glow) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, var(--accent-glow) 0%, transparent 20%);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme Cards */
+.theme-options {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.theme-card {
+    flex: 1;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(125, 125, 125, 0.05);
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.theme-card:hover {
+    background: rgba(125, 125, 125, 0.1);
+}
+
+.theme-card.active {
+    border-color: var(--accent-color);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.theme-preview {
+    height: 40px;
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+}
+
+.glass-input {
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* Header */
+.main-header {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: relative;
+    /* For absolute positioning of logo */
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-area h1 {
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+    margin-right: 8px;
+}
+
+/* .app-logo removed */
+
+/* ... unchanged ... */
+
+.project-name-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid transparent;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    width: 250px;
+}
+
+.project-name-input:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.project-name-input:focus {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: var(--accent-color);
+}
+
+.highlight {
+    color: var(--accent-color);
+}
+
+.controls-area {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Scale Selector */
+.scale-selector {
+    display: flex;
+    padding: 4px;
+    gap: 4px;
+}
+
+.scale-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.scale-btn:hover {
+    color: var(--text-primary);
+}
+
+.scale-btn.active {
+    background: var(--accent-color);
+    color: white;
+    box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+/* Buttons */
+.icon-btn {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.export-controls {
+    display: flex;
+    gap: 8px;
+    margin-right: 10px;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, var(--accent-color), #2563eb);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primary-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.primary-btn:active {
+    transform: translateY(0);
+}
+
+/* Split View Layout */
+.split-view {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 20px;
+    /* Optional gap between panels */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    height: var(--timeline-header-height);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--sidebar-header-bg);
+}
+
+/* ... */
+
+.sidebar-col {
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+}
+
+.task-col {
+    flex: 2;
+    border-right: 1px solid var(--glass-border);
+    height: 100%;
+}
+
+.owner-col {
+    flex: 1;
+    height: 100%;
+}
+
+.index-col {
+    width: 40px;
+    justify-content: center;
+    border-right: 1px solid var(--glass-border);
+    height: 100%;
+}
+
+.sidebar-body {
+    flex: 1;
+    overflow: hidden;
+    /* Scrolls synced with Gantt Body via JS */
+}
+
+.sidebar-row {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.sidebar-row:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-cell {
+    padding: 0 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    font-size: 0.9rem;
+}
+
+.sidebar-cell.task-name {
+    flex: 2;
+    border-right: 1px solid var(--glass-border);
+    color: var(--text-primary);
+}
+
+.sidebar-cell.task-owner {
+    flex: 1;
+    color: var(--text-secondary);
+}
+
+.sidebar-cell.index-cell {
+    width: 40px;
+    justify-content: center;
+    border-right: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* Gantt Chart Area */
+.gantt-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.gantt-header-container {
+    height: var(--timeline-header-height);
+    border-bottom: 1px solid var(--glass-border);
+    position: relative;
+    background: var(--header-bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.gantt-header-top,
+.gantt-header-middle,
+.gantt-header-bottom {
+    display: flex;
+    position: relative;
+    will-change: transform;
+    height: 30px;
+    border-bottom: 1px solid var(--glass-border);
+    align-items: center;
+}
+
+.gantt-header-bottom {
+    border-bottom: none;
+}
+
+.timeline-cell {
+    border-right: 1px solid var(--grid-line-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    height: 100%;
+    padding: 0 4px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.timeline-cell.group {
+    font-weight: 600;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.gantt-body {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    background:
+        linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+    /* background-size set by JS */
+}
+
+/* Task Bars */
+.gantt-row {
+    height: 50px;
+    position: relative;
+    border-bottom: 1px solid var(--grid-line-color);
+    transition: background-color 0.2s;
+}
+
+.gantt-row:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    /* Hover is handled nicely if row matches sidebar row */
+}
+
+/* Sync hover effect via JS is trickier, we might just rely on alignment */
+
+.task-bar {
+    position: absolute;
+    top: 10px;
+    height: 30px;
+    border-radius: 6px;
+    /* background set inline */
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 0.85rem;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 10;
+}
+
+.task-bar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 11;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal {
+    width: 100%;
+    max-width: 450px;
+    padding: 24px;
+    background: var(--modal-bg);
+    border: 1px solid var(--glass-border);
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: var(--text-primary);
+    /* Ensure text inherits correctly */
+}
+
+.modal-overlay.open .modal {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: var(--text-primary);
+}
+
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.color-options {
+    display: flex;
+    gap: 10px;
+}
+
+.color-radio input {
+    display: none;
+}
+
+.swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: block;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+    position: relative;
+    /* For checkmark pos */
+}
+
+/* Enhanced Selected State */
+/* Enhanced Selected State - Base */
+.color-radio input:checked+.swatch {
+    border-color: white;
+    transform: scale(1.15);
+    /* Shadow color defined by specific values below */
+}
+
+/* Color-specific focus rings */
+.color-radio input[value="#3b82f6"]:checked+.swatch {
+    box-shadow: 0 0 0 2px #3b82f6, 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.color-radio input[value="#8b5cf6"]:checked+.swatch {
+    box-shadow: 0 0 0 2px #8b5cf6, 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+.color-radio input[value="#10b981"]:checked+.swatch {
+    box-shadow: 0 0 0 2px #10b981, 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.color-radio input[value="#f59e0b"]:checked+.swatch {
+    box-shadow: 0 0 0 2px #f59e0b, 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+.color-radio input[value="#ef4444"]:checked+.swatch {
+    box-shadow: 0 0 0 2px #ef4444, 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+.color-radio input[value="#ec4899"]:checked+.swatch {
+    box-shadow: 0 0 0 2px #ec4899, 0 0 10px rgba(236, 72, 153, 0.4);
+}
+
+/* Checkmark overlay */
+.color-radio input:checked+.swatch::after {
+    content: '✓';
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    line-height: 0;
+    /* Align helper */
+    margin-top: -1px;
+    /* Optical center */
+}
+
+.modal-actions {
+    margin-top: 24px;
+}
+
+.full-width {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Settings Modal Tabs */
+.settings-modal {
+    min-width: 400px;
+}
+
+.settings-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--grid-line-color);
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+    color: var(--accent-color);
+    background: rgba(59, 130, 246, 0.1);
+    font-weight: 600;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Team Management Styles */
+.team-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.team-input-group input {
+    width: 100%;
+}
+
+.team-list {
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.team-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.team-item:last-child {
+    border-bottom: none;
+}
+
+.team-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.btn-remove-member {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px;
+    border-radius: 4px;
+    line-height: 1;
+}
+
+.btn-remove-member:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Summary Tab */
+.summary-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding-top: 8px;
+}
+
+.stat-card {
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+}
+
+.stat-card h3 {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.stat-card p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-card.full-width {
+    grid-column: span 2;
+}
+
+.stat-card.full-width p {
+    font-size: 1.1rem;
+    /* Smaller font for potentially long task names */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
